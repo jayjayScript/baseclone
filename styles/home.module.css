@@ -1,0 +1,64 @@
+.brandMark {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #0052ff 0%, #0047dd 100%);
+  box-shadow: 0 18px 38px rgba(0, 82, 255, 0.28);
+}
+
+.brandMark::after {
+  content: "";
+  position: absolute;
+  inset: 0.5rem;
+  border-radius: 9999px;
+  background: white;
+}
+
+.heroGlow {
+  position: absolute;
+  inset: auto 0 3rem;
+  height: 24rem;
+  border-radius: 9999px;
+  background:
+    radial-gradient(circle, rgba(0, 82, 255, 0.32) 0%, rgba(0, 82, 255, 0.14) 32%, transparent 70%);
+  filter: blur(32px);
+}
+
+.heroPanel {
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 2.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 255, 0.96));
+  box-shadow:
+    0 35px 100px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.miniChart {
+  background:
+    linear-gradient(180deg, rgba(0, 82, 255, 0.14), rgba(255, 255, 255, 0.94)),
+    radial-gradient(circle at top right, rgba(0, 82, 255, 0.24), transparent 40%);
+  border: 1px solid rgba(191, 219, 254, 0.9);
+}
+
+.assetDot {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, #0052ff 0%, #74a9ff 100%);
+  box-shadow: 0 0 0 0.35rem rgba(0, 82, 255, 0.12);
+}
+
+.mediaCard {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(226, 236, 255, 0.95)),
+    radial-gradient(circle at top left, rgba(0, 82, 255, 0.2), transparent 34%);
+  box-shadow: 0 32px 90px rgba(0, 82, 255, 0.12);
+}
+
+.upsellCard {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 252, 255, 0.98));
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.05);
+}

@@ -1,0 +1,2 @@
+try{(function(){var e=typeof window<"u"?window:typeof global<"u"?global:typeof globalThis<"u"?globalThis:typeof self<"u"?self:{},o=new e.Error().stack;o&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[o]="7f559c00-1070-43f8-8ada-da88a73954e1",e._sentryDebugIdIdentifier="sentry-dbid-7f559c00-1070-43f8-8ada-da88a73954e1")})()}catch{}const d=(e,o=0)=>{const n=document.getElementById(e);if(n){const t=(n==null?void 0:n.getBoundingClientRect().top)-o+window.scrollY;window.scroll({top:t,behavior:"smooth"})}};export{d as s};
+//# sourceMappingURL=c_L3pYwZZ0.js.map

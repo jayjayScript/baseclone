@@ -1,0 +1,2 @@
+import{h as o}from"./e_C3MCcFGy.js";try{(function(){var e=typeof window<"u"?window:typeof global<"u"?global:typeof globalThis<"u"?globalThis:typeof self<"u"?self:{},n=new e.Error().stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="a8e9443f-47d8-44a0-a780-c6f02577f948",e._sentryDebugIdIdentifier="sentry-dbid-a8e9443f-47d8-44a0-a780-c6f02577f948")})()}catch{}const t=o("COINBASE_PUBLIC_DEPLOYMENT_TARGET"),f=t==="production";export{f as i};
+//# sourceMappingURL=c_D-2tzX5j.js.map
