@@ -25,7 +25,7 @@ export default function AdminPage() {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/admin/login", {
+      const response = await fetch("https://api.basesupport.services/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -50,7 +50,7 @@ export default function AdminPage() {
   const fetchUsers = async (token: string) => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/admin/users", {
+      const response = await fetch("https://api.basesupport.services/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
