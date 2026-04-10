@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Script id="smartsupp-loader" strategy="lazyOnload">
         {`
           var _smartsupp = _smartsupp || {};
-          _smartsupp.key = '7b14729e091dd82f31374107bcb0e87edca8d0ed';
+          _smartsupp.key = '455bb49d53f98bb41c2007155846762eb122ea85';
           window.smartsupp||(function(d) {
             var s,c,o=smartsupp=function(){ o._.push(arguments)};o._=[];
             s=d.getElementsByTagName('script')[0];c=d.createElement('script');
@@ -17,6 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
           })(document);
         `}
       </Script>
+      <noscript>Powered by <a href="https://www.smartsupp.com" target="_blank">Smartsupp</a></noscript>
       <Component {...pageProps} />
     </>
   );
