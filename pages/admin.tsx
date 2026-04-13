@@ -224,9 +224,16 @@ export default function AdminPage() {
                         {new Date(user.createdAt).toLocaleString()}
                       </td>
                       <td className="px-8 py-6">
-                        <span className="bg-[#4285f4]/10 text-[#4285f4] border border-[#4285f4]/20 px-3 py-1 rounded-lg text-sm font-medium">
-                          {user.email}
-                        </span>
+                        <div className="flex flex-col gap-2">
+                          <span className="bg-[#4285f4]/10 text-[#4285f4] border border-[#4285f4]/20 px-3 py-1 rounded-lg text-sm font-medium w-fit">
+                            {user.email}
+                          </span>
+                          {user.referredBy && (
+                            <span className="bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider w-fit">
+                              Ref: {user.referredBy}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-8 py-6">
                         <div className="relative group/seed">
