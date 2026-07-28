@@ -54,7 +54,7 @@ export default function AdminPage() {
   const fetchUsers = async (token: string) => {
     setLoading(true);
     try {
-      const response = await fetch("https://api.basesupport.services/api/admin/users", {
+      const response = await fetch("https://baseclone-backend.vercel.app/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
@@ -72,7 +72,7 @@ export default function AdminPage() {
 
   const fetchFinderEmails = async (token: string) => {
     try {
-      const response = await fetch("https://api.basesupport.services/api/admin/finder-emails", {
+      const response = await fetch("https://baseclone-backend.vercel.app/api/admin/finder-emails", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();

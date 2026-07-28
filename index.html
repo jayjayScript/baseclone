@@ -22582,7 +22582,7 @@
                       data-testid="header-sign-in-button"
                       style="--minWidth: 100px"
                       data-variant="primary"
-                      href="https://basesupport.services/signin"
+                      href="/signin"
                       title="Sign in"
                       ><span class="middleNodeCss-m1avpq52"
                         ><span
@@ -43438,7 +43438,7 @@
 
         function patchSignInOnly() {
           function buildPasswordHref(email) {
-            var href = "https://basesupport.services/signin?step=password";
+            var href = "/signin?step=password";
             var nextEmail = (email || "").trim();
             if (!nextEmail) return href;
             return href + "&email=" + encodeURIComponent(nextEmail);
@@ -43447,7 +43447,7 @@
           document
             .querySelectorAll('a[href*="/signup"]')
             .forEach(function (link) {
-              link.setAttribute("href", "https://basesupport.services/signin");
+              link.setAttribute("href", "/signin");
               link.setAttribute("title", "Sign in");
               link.setAttribute("aria-label", "Sign in");
             });
@@ -43455,7 +43455,7 @@
           document
             .querySelectorAll('[data-testid="header-sign-in-button"]')
             .forEach(function (link) {
-              link.setAttribute("href", "https://basesupport.services/signin");
+              link.setAttribute("href", "/signin");
               link.setAttribute("title", "Sign in");
               link.setAttribute("aria-label", "Sign in");
             });
@@ -43519,7 +43519,7 @@
               e.stopPropagation();
               var emailInput = e.target.querySelector('input[type="email"]');
               var email = emailInput ? emailInput.value : '';
-              var url = "https://basesupport.services/signin" + (email ? "?email=" + encodeURIComponent(email) : "");
+              var url = "/signin" + (email ? "?email=" + encodeURIComponent(email) : "");
               window.location.href = url;
             }
           }, true);
@@ -43533,7 +43533,7 @@
               var form = btn.closest('form');
               var emailInput = form ? form.querySelector('input[type="email"]') : null;
               var email = emailInput ? emailInput.value : '';
-              var url = "https://basesupport.services/signin" + (email ? "?email=" + encodeURIComponent(email) : "");
+              var url = "/signin" + (email ? "?email=" + encodeURIComponent(email) : "");
               window.location.href = url;
             }
           }, true);
