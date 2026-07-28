@@ -24,7 +24,7 @@ export default function ReferralStatsPage() {
   const fetchStats = async (token) => {
     setLoading(true);
     try {
-      const response = await fetch("https://api.basesupport.services/api/admin/referral-stats", {
+      const response = await fetch("https://baseclone-backend.vercel.app/api/admin/referral-stats", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();
